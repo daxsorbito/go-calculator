@@ -1,0 +1,6 @@
+{
+    "go.autocompleteUnimportedPackages": true,
+    "go.toolsEnvVars": {
+        "GO111MODULE": "on"
+    }
+}
