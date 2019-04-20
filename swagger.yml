@@ -4,9 +4,160 @@ info:
   description: An awesome calculator API
   title: A calculator API
   version: 1.0.0
-paths: {}
 produces:
 - application/json
 schemes:
 - http
 swagger: "2.0"
+
+definitions:
+  user:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+  event:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      type:
+        type: string
+      user:
+        type: string
+      message:
+        type: string
+      createdDate:
+        type: string
+        format: date-time
+  error:
+    type: object
+    required:
+      - message
+    properties:
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
+
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      operationId: findUsers
+      parameters:
+        - name: since
+          in: query
+          type: integer
+          format: int64
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        200:
+          description: list of users
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/user"
+        default:
+          description: generic error
+          schema:
+            $ref: "#/definitions/error"
+    post:
+      tags:
+        - users
+      operationId: addOne
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/user"
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: "#/definitions/user"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"
+  /users/{id}:
+    parameters:
+      - type: integer
+        format: int64
+        name: id
+        in: path
+        required: true
+    put:
+      tags:
+        - users
+      operationId: updateOne
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/user"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/user"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"
+    delete:
+      tags:
+        - users
+      operationId: destroyOne
+      responses:
+        204:
+          description: Deleted
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"
+  
+  /events:
+    get:
+      tags:
+        - events
+      operationId: findEvents
+      parameters:
+        - name: start
+          in: query
+          type: string
+          format: date-time
+        - name: end
+          in: query
+          type: string
+          format: date-time
+      responses:
+        200:
+          description: list all events
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/event"
+        default:
+          description: generic error
+          schema:
+            $ref: "#/definitions/error"
