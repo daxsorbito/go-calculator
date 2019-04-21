@@ -12,7 +12,7 @@ func TestSub(t *testing.T) {
 		wantResult float32
 	}{
 		{
-			name:       "Able to execute happy path",
+			name:       "Able to execute properly",
 			args:       args{[]int64{1, 2, 3}},
 			wantResult: -6,
 		},

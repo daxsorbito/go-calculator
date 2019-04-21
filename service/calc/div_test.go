@@ -12,7 +12,7 @@ func TestDiv(t *testing.T) {
 		wantResult float32
 	}{
 		{
-			name:       "Able to execute happy path",
+			name:       "Able to execute properly",
 			args:       args{[]int64{10, 5}},
 			wantResult: 2,
 		},
