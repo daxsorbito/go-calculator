@@ -13,7 +13,20 @@ A calculator API
 1. ```docker-compose up```
 2. Open a brower and navigate to `http://localhost:8080/v1/swagger`
 
-### Features:
+### Testing swagger
+
+1. Navigate to `http://localhost:8080/v1/swagger`
+1. Click on the `Authorize` button
+1. Enter this token `abcdefuvwxyz`
+1. Click `Authorize`
+1. Click `Close`
+1. Go to `/calc` endpoint]
+1. Click the `Try it out` button
+1. Enter an `operation` either `add, sub, div, multi, div, sqrt, cbrt, pow or fac` - validated to only using these keywords
+1. Enter values to compute in the `args` fields
+1. Click `Execute` button to see the result
+
+### Features
 
 - [x] Swagger implementation - `go-swagger`
 - [x] Implement middleware for swagger doc (not using ReDoc)
@@ -24,4 +37,4 @@ A calculator API
 - [x] Docker-compose to spin up the app and `mongodb`
 - [ ] Service and unit test for `report` services
 - [ ] API test
-- [ ] CI/CD - maybe using `travis CI`
+- [ ] CI/CD -`travis CI`
