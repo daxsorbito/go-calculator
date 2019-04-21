@@ -50,8 +50,8 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "integer",
-              "format": "float64"
+              "type": "number",
+              "format": "float"
             }
           },
           "default": {
@@ -218,8 +218,8 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "integer",
-              "format": "float64"
+              "type": "number",
+              "format": "float"
             }
           },
           "default": {

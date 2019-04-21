@@ -9,7 +9,7 @@ func TestMult(t *testing.T) {
 	tests := []struct {
 		name       string
 		args       args
-		wantResult float64
+		wantResult float32
 	}{
 		{
 			name:       "Able to execute happy path",

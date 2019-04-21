@@ -25,7 +25,7 @@ type CalcOperationOK struct {
 	/*
 	  In: Body
 	*/
-	Payload int64 `json:"body,omitempty"`
+	Payload float32 `json:"body,omitempty"`
 }
 
 // NewCalcOperationOK creates CalcOperationOK with default headers values
@@ -35,13 +35,13 @@ func NewCalcOperationOK() *CalcOperationOK {
 }
 
 // WithPayload adds the payload to the calc operation o k response
-func (o *CalcOperationOK) WithPayload(payload int64) *CalcOperationOK {
+func (o *CalcOperationOK) WithPayload(payload float32) *CalcOperationOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the calc operation o k response
-func (o *CalcOperationOK) SetPayload(payload int64) {
+func (o *CalcOperationOK) SetPayload(payload float32) {
 	o.Payload = payload
 }
 

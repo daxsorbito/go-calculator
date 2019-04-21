@@ -4,6 +4,7 @@ package restapi
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
@@ -15,6 +16,8 @@ import (
 	"github.com/calcuco/calculator/restapi/operations"
 	"github.com/calcuco/calculator/restapi/operations/calc"
 	"github.com/calcuco/calculator/restapi/operations/report"
+
+	srvc "github.com/calcuco/calculator/service/calc"
 )
 
 //go:generate swagger generate server --target ../../calculator --name Calculator --spec ../swagger.yml
@@ -39,7 +42,13 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 
 	// Applies when the "x-token" header is set
 	api.KeyAuth = func(token string) (interface{}, error) {
-		return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+		// return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+		if token == "abcdefuvwxyz" {
+			// prin := token
+			return token, nil
+		}
+		api.Logger("Access attempt with incorrect api key auth: %s", token)
+		return nil, errors.New(401, "incorrect api key auth")
 	}
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()
@@ -47,11 +56,15 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 	//
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
-	if api.CalcCalcOperationHandler == nil {
-		api.CalcCalcOperationHandler = calc.CalcOperationHandlerFunc(func(params calc.CalcOperationParams, principal interface{}) middleware.Responder {
-			return middleware.NotImplemented("operation calc.CalcOperation has not yet been implemented")
-		})
-	}
+	// if api.CalcCalcOperationHandler == nil {
+	api.CalcCalcOperationHandler = calc.CalcOperationHandlerFunc(func(params calc.CalcOperationParams, principal interface{}) middleware.Responder {
+		fmt.Println(">>>>", principal, params.Operation, params.Args)
+		calcService := srvc.NewCalcService(params.Operation, params.Args)
+		result := calcService.Execute()
+
+		return calc.NewCalcOperationOK().WithPayload(result)
+	})
+	// }
 	if api.ReportFindReportsHandler == nil {
 		api.ReportFindReportsHandler = report.FindReportsHandlerFunc(func(params report.FindReportsParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation report.FindReports has not yet been implemented")
