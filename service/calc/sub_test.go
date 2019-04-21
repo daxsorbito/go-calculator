@@ -14,12 +14,12 @@ func TestSub(t *testing.T) {
 		{
 			name:       "Able to execute properly",
 			args:       args{[]int64{1, 2, 3}},
-			wantResult: -6,
+			wantResult: -4,
 		},
 		{
 			name:       "Handle with negative values",
-			args:       args{[]int64{1, -2, 3}},
-			wantResult: -2,
+			args:       args{[]int64{2, -2, 3}},
+			wantResult: 1,
 		},
 	}
 	for _, tt := range tests {
