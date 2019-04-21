@@ -17,6 +17,7 @@ paths:
     get:
       tags:
         - report
+      summary: "Query report on a time range"
       operationId: findReports
       parameters:
         - name: start

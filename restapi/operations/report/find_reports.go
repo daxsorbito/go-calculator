@@ -31,7 +31,7 @@ func NewFindReports(ctx *middleware.Context, handler FindReportsHandler) *FindRe
 
 /*FindReports swagger:route GET /report report findReports
 
-FindReports find reports API
+Query report on a time range
 
 */
 type FindReports struct {

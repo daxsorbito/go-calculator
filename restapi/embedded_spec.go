@@ -92,6 +92,7 @@ func init() {
         "tags": [
           "report"
         ],
+        "summary": "Query report on a time range",
         "operationId": "findReports",
         "parameters": [
           {
@@ -260,6 +261,7 @@ func init() {
         "tags": [
           "report"
         ],
+        "summary": "Query report on a time range",
         "operationId": "findReports",
         "parameters": [
           {
