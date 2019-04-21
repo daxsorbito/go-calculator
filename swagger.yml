@@ -1,33 +1,86 @@
-consumes:
-- application/json
-info:
-  description: An awesome calculator API
-  title: A calculator API
-  version: 1.0.0
-produces:
-- application/json
-schemes:
-- http
 swagger: "2.0"
+info:
+  description: "This is CalcuCo's awesome calculator. <br> <br>Operation supported: <br> <ol><li>Add - `add` </li> <li>Subtract - `sub`</li><li>Multiply - `multi`</li><li>Divide - `div`</li><li>Square root - `sqrt`</li><li>Qubic root - `cbrt`</li><li>Power - `pow`</li><li>Factorial - `fac`</li><ol>"
+  version: "1.0.0"
+  title: "CalcuCo's calculator"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/v1"
+tags:
+- name: "report"
+  description: "Event's API information"
+schemes:
+- "http"
+paths:
+  /report:
+    get:
+      tags:
+        - report
+      operationId: findReports
+      parameters:
+        - name: start
+          in: query
+          type: string
+          format: date-time
+        - name: end
+          in: query
+          type: string
+          format: date-time
+      responses:
+        200:
+          description: list all events
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/report"
+        default:
+          description: generic error
+          schema:
+            $ref: "#/definitions/error"
+      security:
+        - key: []
+  /calc/{operation}/{args}:
+    parameters: 
+      - name: operation
+        in: path
+        type: string
+        pattern: "^(add|sub|multi|div|sqrt|cbrt|pow|fac)$"
+        required: true
+      - name: args
+        in: path
+        type: array
+        items:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - calc
+      summary: "Performs mathematical computations"
+      description: "Operation would either be: <ol><li>Add - `add` </li> <li>Subtract - `sub`</li><li>Multiply - `multi`</li><li>Divide - `div`</li><li>Square root - `sqrt`</li><li>Qubic root - `cbrt`</li><li>Power - `pow`</li><li>Factorial - `fac`</li><ol>"
+      operationId: calcOperation
+      responses:
+        200:
+          description: OK
+          schema:
+            type: integer
+            format: float64
+        default:
+          description: generic error
+          schema:
+            $ref: "#/definitions/error"
+      security:
+        - key: []
+
+securityDefinitions:
+  key:
+    type: apiKey
+    in: header
+    name: x-token
 
 definitions:
-  user:
-    type: object
-    required:
-      - email
-      - password
-    properties:
-      id:
-        type: integer
-        format: int64
-        readOnly: true
-      email:
-        type: string
-        format: email
-      password:
-        type: string
-        format: password
-  event:
+  report:
     type: object
     properties:
       id:
@@ -54,110 +107,6 @@ definitions:
       message:
         type: string
 
-paths:
-  /users:
-    get:
-      tags:
-        - users
-      operationId: findUsers
-      parameters:
-        - name: since
-          in: query
-          type: integer
-          format: int64
-        - name: limit
-          in: query
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        200:
-          description: list of users
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/user"
-        default:
-          description: generic error
-          schema:
-            $ref: "#/definitions/error"
-    post:
-      tags:
-        - users
-      operationId: addOne
-      parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: "#/definitions/user"
-      responses:
-        201:
-          description: Created
-          schema:
-            $ref: "#/definitions/user"
-        default:
-          description: error
-          schema:
-            $ref: "#/definitions/error"
-  /users/{id}:
-    parameters:
-      - type: integer
-        format: int64
-        name: id
-        in: path
-        required: true
-    put:
-      tags:
-        - users
-      operationId: updateOne
-      parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: "#/definitions/user"
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: "#/definitions/user"
-        default:
-          description: error
-          schema:
-            $ref: "#/definitions/error"
-    delete:
-      tags:
-        - users
-      operationId: destroyOne
-      responses:
-        204:
-          description: Deleted
-        default:
-          description: error
-          schema:
-            $ref: "#/definitions/error"
-  
-  /events:
-    get:
-      tags:
-        - events
-      operationId: findEvents
-      parameters:
-        - name: start
-          in: query
-          type: string
-          format: date-time
-        - name: end
-          in: query
-          type: string
-          format: date-time
-      responses:
-        200:
-          description: list all events
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/event"
-        default:
-          description: generic error
-          schema:
-            $ref: "#/definitions/error"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

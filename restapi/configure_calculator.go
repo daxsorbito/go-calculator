@@ -9,10 +9,12 @@ import (
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/rs/cors"
+	"github.com/syllabix/swagserver"
 
 	"github.com/calcuco/calculator/restapi/operations"
-	"github.com/calcuco/calculator/restapi/operations/events"
-	"github.com/calcuco/calculator/restapi/operations/users"
+	"github.com/calcuco/calculator/restapi/operations/calc"
+	"github.com/calcuco/calculator/restapi/operations/report"
 )
 
 //go:generate swagger generate server --target ../../calculator --name Calculator --spec ../swagger.yml
@@ -35,29 +37,24 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.UsersAddOneHandler == nil {
-		api.UsersAddOneHandler = users.AddOneHandlerFunc(func(params users.AddOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation users.AddOne has not yet been implemented")
+	// Applies when the "x-token" header is set
+	api.KeyAuth = func(token string) (interface{}, error) {
+		return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
+	if api.CalcCalcOperationHandler == nil {
+		api.CalcCalcOperationHandler = calc.CalcOperationHandlerFunc(func(params calc.CalcOperationParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation calc.CalcOperation has not yet been implemented")
 		})
 	}
-	if api.UsersDestroyOneHandler == nil {
-		api.UsersDestroyOneHandler = users.DestroyOneHandlerFunc(func(params users.DestroyOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation users.DestroyOne has not yet been implemented")
-		})
-	}
-	if api.EventsFindEventsHandler == nil {
-		api.EventsFindEventsHandler = events.FindEventsHandlerFunc(func(params events.FindEventsParams) middleware.Responder {
-			return middleware.NotImplemented("operation events.FindEvents has not yet been implemented")
-		})
-	}
-	if api.UsersFindUsersHandler == nil {
-		api.UsersFindUsersHandler = users.FindUsersHandlerFunc(func(params users.FindUsersParams) middleware.Responder {
-			return middleware.NotImplemented("operation users.FindUsers has not yet been implemented")
-		})
-	}
-	if api.UsersUpdateOneHandler == nil {
-		api.UsersUpdateOneHandler = users.UpdateOneHandlerFunc(func(params users.UpdateOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation users.UpdateOne has not yet been implemented")
+	if api.ReportFindReportsHandler == nil {
+		api.ReportFindReportsHandler = report.FindReportsHandlerFunc(func(params report.FindReportsParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation report.FindReports has not yet been implemented")
 		})
 	}
 
@@ -87,5 +84,12 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	swagserve := swagserver.New(swagserver.Config{
+		URLPath:        "/v1/swagger",
+		ShouldRender:   true,
+		SwaggerSpecURL: "/swagger.json",
+	})
+	handleCORS := cors.Default().Handler
+
+	return handleCORS(swagserve(handler))
 }

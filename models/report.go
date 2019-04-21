@@ -13,9 +13,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Event event
-// swagger:model event
-type Event struct {
+// Report report
+// swagger:model report
+type Report struct {
 
 	// created date
 	// Format: date-time
@@ -35,8 +35,8 @@ type Event struct {
 	User string `json:"user,omitempty"`
 }
 
-// Validate validates this event
-func (m *Event) Validate(formats strfmt.Registry) error {
+// Validate validates this report
+func (m *Report) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreatedDate(formats); err != nil {
@@ -49,7 +49,7 @@ func (m *Event) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Event) validateCreatedDate(formats strfmt.Registry) error {
+func (m *Report) validateCreatedDate(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.CreatedDate) { // not required
 		return nil
@@ -63,7 +63,7 @@ func (m *Event) validateCreatedDate(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *Event) MarshalBinary() ([]byte, error) {
+func (m *Report) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -71,8 +71,8 @@ func (m *Event) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Event) UnmarshalBinary(b []byte) error {
-	var res Event
+func (m *Report) UnmarshalBinary(b []byte) error {
+	var res Report
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

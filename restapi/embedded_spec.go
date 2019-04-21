@@ -18,28 +18,81 @@ var (
 
 func init() {
 	SwaggerJSON = json.RawMessage([]byte(`{
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
   "schemes": [
     "http"
   ],
   "swagger": "2.0",
   "info": {
-    "description": "An awesome calculator API",
-    "title": "A calculator API",
+    "description": "This is CalcuCo's awesome calculator. \u003cbr\u003e \u003cbr\u003eOperation supported: \u003cbr\u003e \u003col\u003e\u003cli\u003eAdd - ` + "`" + `add` + "`" + ` \u003c/li\u003e \u003cli\u003eSubtract - ` + "`" + `sub` + "`" + `\u003c/li\u003e\u003cli\u003eMultiply - ` + "`" + `multi` + "`" + `\u003c/li\u003e\u003cli\u003eDivide - ` + "`" + `div` + "`" + `\u003c/li\u003e\u003cli\u003eSquare root - ` + "`" + `sqrt` + "`" + `\u003c/li\u003e\u003cli\u003eQubic root - ` + "`" + `cbrt` + "`" + `\u003c/li\u003e\u003cli\u003ePower - ` + "`" + `pow` + "`" + `\u003c/li\u003e\u003cli\u003eFactorial - ` + "`" + `fac` + "`" + `\u003c/li\u003e\u003col\u003e",
+    "title": "CalcuCo's calculator",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
     "version": "1.0.0"
   },
+  "basePath": "/v1",
   "paths": {
-    "/events": {
+    "/calc/{operation}/{args}": {
       "get": {
-        "tags": [
-          "events"
+        "security": [
+          {
+            "key": []
+          }
         ],
-        "operationId": "findEvents",
+        "description": "Operation would either be: \u003col\u003e\u003cli\u003eAdd - ` + "`" + `add` + "`" + ` \u003c/li\u003e \u003cli\u003eSubtract - ` + "`" + `sub` + "`" + `\u003c/li\u003e\u003cli\u003eMultiply - ` + "`" + `multi` + "`" + `\u003c/li\u003e\u003cli\u003eDivide - ` + "`" + `div` + "`" + `\u003c/li\u003e\u003cli\u003eSquare root - ` + "`" + `sqrt` + "`" + `\u003c/li\u003e\u003cli\u003eQubic root - ` + "`" + `cbrt` + "`" + `\u003c/li\u003e\u003cli\u003ePower - ` + "`" + `pow` + "`" + `\u003c/li\u003e\u003cli\u003eFactorial - ` + "`" + `fac` + "`" + `\u003c/li\u003e\u003col\u003e",
+        "tags": [
+          "calc"
+        ],
+        "summary": "Performs mathematical computations",
+        "operationId": "calcOperation",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer",
+              "format": "float64"
+            }
+          },
+          "default": {
+            "description": "generic error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "pattern": "^(add|sub|multi|div|sqrt|cbrt|pow|fac)$",
+          "type": "string",
+          "name": "operation",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": "args",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/report": {
+      "get": {
+        "security": [
+          {
+            "key": []
+          }
+        ],
+        "tags": [
+          "report"
+        ],
+        "operationId": "findReports",
         "parameters": [
           {
             "type": "string",
@@ -60,7 +113,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/event"
+                "$ref": "#/definitions/report"
               }
             }
           },
@@ -72,132 +125,6 @@ func init() {
           }
         }
       }
-    },
-    "/users": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "findUsers",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "since",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "format": "int32",
-            "default": 20,
-            "name": "limit",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "list of users",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/user"
-              }
-            }
-          },
-          "default": {
-            "description": "generic error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "addOne",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "put": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "updateOne",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "destroyOne",
-        "responses": {
-          "204": {
-            "description": "Deleted"
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "type": "integer",
-          "format": "int64",
-          "name": "id",
-          "in": "path",
-          "required": true
-        }
-      ]
     }
   },
   "definitions": {
@@ -216,7 +143,7 @@ func init() {
         }
       }
     },
-    "event": {
+    "report": {
       "type": "object",
       "properties": {
         "createdDate": {
@@ -238,54 +165,102 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "user": {
-      "type": "object",
-      "required": [
-        "email",
-        "password"
-      ],
-      "properties": {
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "readOnly": true
-        },
-        "password": {
-          "type": "string",
-          "format": "password"
-        }
-      }
     }
+  },
+  "securityDefinitions": {
+    "key": {
+      "type": "apiKey",
+      "name": "x-token",
+      "in": "header"
+    }
+  },
+  "tags": [
+    {
+      "description": "Event's API information",
+      "name": "report"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
   }
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
   "schemes": [
     "http"
   ],
   "swagger": "2.0",
   "info": {
-    "description": "An awesome calculator API",
-    "title": "A calculator API",
+    "description": "This is CalcuCo's awesome calculator. \u003cbr\u003e \u003cbr\u003eOperation supported: \u003cbr\u003e \u003col\u003e\u003cli\u003eAdd - ` + "`" + `add` + "`" + ` \u003c/li\u003e \u003cli\u003eSubtract - ` + "`" + `sub` + "`" + `\u003c/li\u003e\u003cli\u003eMultiply - ` + "`" + `multi` + "`" + `\u003c/li\u003e\u003cli\u003eDivide - ` + "`" + `div` + "`" + `\u003c/li\u003e\u003cli\u003eSquare root - ` + "`" + `sqrt` + "`" + `\u003c/li\u003e\u003cli\u003eQubic root - ` + "`" + `cbrt` + "`" + `\u003c/li\u003e\u003cli\u003ePower - ` + "`" + `pow` + "`" + `\u003c/li\u003e\u003cli\u003eFactorial - ` + "`" + `fac` + "`" + `\u003c/li\u003e\u003col\u003e",
+    "title": "CalcuCo's calculator",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
     "version": "1.0.0"
   },
+  "basePath": "/v1",
   "paths": {
-    "/events": {
+    "/calc/{operation}/{args}": {
       "get": {
-        "tags": [
-          "events"
+        "security": [
+          {
+            "key": []
+          }
         ],
-        "operationId": "findEvents",
+        "description": "Operation would either be: \u003col\u003e\u003cli\u003eAdd - ` + "`" + `add` + "`" + ` \u003c/li\u003e \u003cli\u003eSubtract - ` + "`" + `sub` + "`" + `\u003c/li\u003e\u003cli\u003eMultiply - ` + "`" + `multi` + "`" + `\u003c/li\u003e\u003cli\u003eDivide - ` + "`" + `div` + "`" + `\u003c/li\u003e\u003cli\u003eSquare root - ` + "`" + `sqrt` + "`" + `\u003c/li\u003e\u003cli\u003eQubic root - ` + "`" + `cbrt` + "`" + `\u003c/li\u003e\u003cli\u003ePower - ` + "`" + `pow` + "`" + `\u003c/li\u003e\u003cli\u003eFactorial - ` + "`" + `fac` + "`" + `\u003c/li\u003e\u003col\u003e",
+        "tags": [
+          "calc"
+        ],
+        "summary": "Performs mathematical computations",
+        "operationId": "calcOperation",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer",
+              "format": "float64"
+            }
+          },
+          "default": {
+            "description": "generic error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "pattern": "^(add|sub|multi|div|sqrt|cbrt|pow|fac)$",
+          "type": "string",
+          "name": "operation",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": "args",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/report": {
+      "get": {
+        "security": [
+          {
+            "key": []
+          }
+        ],
+        "tags": [
+          "report"
+        ],
+        "operationId": "findReports",
         "parameters": [
           {
             "type": "string",
@@ -306,7 +281,7 @@ func init() {
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/event"
+                "$ref": "#/definitions/report"
               }
             }
           },
@@ -318,132 +293,6 @@ func init() {
           }
         }
       }
-    },
-    "/users": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "findUsers",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "since",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "format": "int32",
-            "default": 20,
-            "name": "limit",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "list of users",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/user"
-              }
-            }
-          },
-          "default": {
-            "description": "generic error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "addOne",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "put": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "updateOne",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "users"
-        ],
-        "operationId": "destroyOne",
-        "responses": {
-          "204": {
-            "description": "Deleted"
-          },
-          "default": {
-            "description": "error",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "type": "integer",
-          "format": "int64",
-          "name": "id",
-          "in": "path",
-          "required": true
-        }
-      ]
     }
   },
   "definitions": {
@@ -462,7 +311,7 @@ func init() {
         }
       }
     },
-    "event": {
+    "report": {
       "type": "object",
       "properties": {
         "createdDate": {
@@ -484,29 +333,24 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "user": {
-      "type": "object",
-      "required": [
-        "email",
-        "password"
-      ],
-      "properties": {
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "readOnly": true
-        },
-        "password": {
-          "type": "string",
-          "format": "password"
-        }
-      }
     }
+  },
+  "securityDefinitions": {
+    "key": {
+      "type": "apiKey",
+      "name": "x-token",
+      "in": "header"
+    }
+  },
+  "tags": [
+    {
+      "description": "Event's API information",
+      "name": "report"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
   }
 }`))
 }

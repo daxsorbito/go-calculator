@@ -19,8 +19,8 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/calcuco/calculator/restapi/operations/events"
-	"github.com/calcuco/calculator/restapi/operations/users"
+	"github.com/calcuco/calculator/restapi/operations/calc"
+	"github.com/calcuco/calculator/restapi/operations/report"
 )
 
 // NewCalculatorAPI creates a new Calculator instance
@@ -40,25 +40,24 @@ func NewCalculatorAPI(spec *loads.Document) *CalculatorAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
-		UsersAddOneHandler: users.AddOneHandlerFunc(func(params users.AddOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation UsersAddOne has not yet been implemented")
+		CalcCalcOperationHandler: calc.CalcOperationHandlerFunc(func(params calc.CalcOperationParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation CalcCalcOperation has not yet been implemented")
 		}),
-		UsersDestroyOneHandler: users.DestroyOneHandlerFunc(func(params users.DestroyOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation UsersDestroyOne has not yet been implemented")
+		ReportFindReportsHandler: report.FindReportsHandlerFunc(func(params report.FindReportsParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation ReportFindReports has not yet been implemented")
 		}),
-		EventsFindEventsHandler: events.FindEventsHandlerFunc(func(params events.FindEventsParams) middleware.Responder {
-			return middleware.NotImplemented("operation EventsFindEvents has not yet been implemented")
-		}),
-		UsersFindUsersHandler: users.FindUsersHandlerFunc(func(params users.FindUsersParams) middleware.Responder {
-			return middleware.NotImplemented("operation UsersFindUsers has not yet been implemented")
-		}),
-		UsersUpdateOneHandler: users.UpdateOneHandlerFunc(func(params users.UpdateOneParams) middleware.Responder {
-			return middleware.NotImplemented("operation UsersUpdateOne has not yet been implemented")
-		}),
+
+		// Applies when the "x-token" header is set
+		KeyAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+		},
+
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
-/*CalculatorAPI An awesome calculator API */
+/*CalculatorAPI This is CalcuCo's awesome calculator. <br> <br>Operation supported: <br> <ol><li>Add - `add` </li> <li>Subtract - `sub`</li><li>Multiply - `multi`</li><li>Divide - `div`</li><li>Square root - `sqrt`</li><li>Qubic root - `cbrt`</li><li>Power - `pow`</li><li>Factorial - `fac`</li><ol> */
 type CalculatorAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context
@@ -86,16 +85,17 @@ type CalculatorAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
-	// UsersAddOneHandler sets the operation handler for the add one operation
-	UsersAddOneHandler users.AddOneHandler
-	// UsersDestroyOneHandler sets the operation handler for the destroy one operation
-	UsersDestroyOneHandler users.DestroyOneHandler
-	// EventsFindEventsHandler sets the operation handler for the find events operation
-	EventsFindEventsHandler events.FindEventsHandler
-	// UsersFindUsersHandler sets the operation handler for the find users operation
-	UsersFindUsersHandler users.FindUsersHandler
-	// UsersUpdateOneHandler sets the operation handler for the update one operation
-	UsersUpdateOneHandler users.UpdateOneHandler
+	// KeyAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key x-token provided in the header
+	KeyAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
+	// CalcCalcOperationHandler sets the operation handler for the calc operation operation
+	CalcCalcOperationHandler calc.CalcOperationHandler
+	// ReportFindReportsHandler sets the operation handler for the find reports operation
+	ReportFindReportsHandler report.FindReportsHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -159,24 +159,16 @@ func (o *CalculatorAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.UsersAddOneHandler == nil {
-		unregistered = append(unregistered, "users.AddOneHandler")
+	if o.KeyAuth == nil {
+		unregistered = append(unregistered, "XTokenAuth")
 	}
 
-	if o.UsersDestroyOneHandler == nil {
-		unregistered = append(unregistered, "users.DestroyOneHandler")
+	if o.CalcCalcOperationHandler == nil {
+		unregistered = append(unregistered, "calc.CalcOperationHandler")
 	}
 
-	if o.EventsFindEventsHandler == nil {
-		unregistered = append(unregistered, "events.FindEventsHandler")
-	}
-
-	if o.UsersFindUsersHandler == nil {
-		unregistered = append(unregistered, "users.FindUsersHandler")
-	}
-
-	if o.UsersUpdateOneHandler == nil {
-		unregistered = append(unregistered, "users.UpdateOneHandler")
+	if o.ReportFindReportsHandler == nil {
+		unregistered = append(unregistered, "report.FindReportsHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -194,14 +186,24 @@ func (o *CalculatorAPI) ServeErrorFor(operationID string) func(http.ResponseWrit
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *CalculatorAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name, scheme := range schemes {
+		switch name {
+
+		case "key":
+
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.KeyAuth)
+
+		}
+	}
+	return result
 
 }
 
 // Authorizer returns the registered authorizer
 func (o *CalculatorAPI) Authorizer() runtime.Authorizer {
 
-	return nil
+	return o.APIAuthorizer
 
 }
 
@@ -277,30 +279,15 @@ func (o *CalculatorAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/users"] = users.NewAddOne(o.context, o.UsersAddOneHandler)
-
-	if o.handlers["DELETE"] == nil {
-		o.handlers["DELETE"] = make(map[string]http.Handler)
-	}
-	o.handlers["DELETE"]["/users/{id}"] = users.NewDestroyOne(o.context, o.UsersDestroyOneHandler)
+	o.handlers["GET"]["/calc/{operation}/{args}"] = calc.NewCalcOperation(o.context, o.CalcCalcOperationHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/events"] = events.NewFindEvents(o.context, o.EventsFindEventsHandler)
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/users"] = users.NewFindUsers(o.context, o.UsersFindUsersHandler)
-
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
-	}
-	o.handlers["PUT"]["/users/{id}"] = users.NewUpdateOne(o.context, o.UsersUpdateOneHandler)
+	o.handlers["GET"]["/report"] = report.NewFindReports(o.context, o.ReportFindReportsHandler)
 
 }
 
