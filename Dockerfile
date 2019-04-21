@@ -17,5 +17,5 @@ COPY --from=builder /go/src/go-calculator/calc-api /opt/go-calc/calc-api
 COPY --from=builder /go/src/go-calculator/.env /opt/go-calc/.env
 
 WORKDIR /opt/go-calc
-CMD [ "/opt/go-calc/calc-api", "--port", "8080" ]
+CMD [ "/opt/go-calc/calc-api", "--port", "8080" , "--host", "0.0.0.0"]
 EXPOSE 8080
