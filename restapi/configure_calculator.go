@@ -18,6 +18,7 @@ import (
 	"github.com/calcuco/calculator/restapi/operations/report"
 
 	srvc "github.com/calcuco/calculator/service/calc"
+	srvcReport "github.com/calcuco/calculator/service/report"
 )
 
 //go:generate swagger generate server --target ../../calculator --name Calculator --spec ../swagger.yml
@@ -30,6 +31,9 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
+	r := srvcReport.NewReportService()
+	fmt.Println(r)
+
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
 	//
@@ -40,6 +44,7 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	fmt.Println("Called>>>>>>>>")
 	// Applies when the "x-token" header is set
 	api.KeyAuth = func(token string) (interface{}, error) {
 		// return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")

@@ -12,6 +12,7 @@ require (
 	github.com/go-openapi/swag v0.19.0
 	github.com/go-openapi/validate v0.19.0
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/joho/godotenv v1.3.0
 	github.com/rakyll/statik v0.1.6 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/syllabix/swagserver v0.1.2
