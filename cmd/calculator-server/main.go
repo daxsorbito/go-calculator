@@ -27,8 +27,8 @@ func main() {
 	defer server.Shutdown()
 
 	parser := flags.NewParser(server, flags.Default)
-	parser.ShortDescription = "A calculator API"
-	parser.LongDescription = "An awesome calculator API"
+	parser.ShortDescription = "CalcuCo's calculator"
+	parser.LongDescription = "This is CalcuCo's awesome calculator. <br> <br>Operation supported: <br> <ol><li>Add - `add` </li> <li>Subtract - `sub`</li><li>Multiply - `multi`</li><li>Divide - `div`</li><li>Square root - `sqrt`</li><li>Qubic root - `cbrt`</li><li>Power - `pow`</li><li>Factorial - `fac`</li><ol>"
 
 	server.ConfigureFlags()
 	for _, optsGroup := range api.CommandLineOptionsGroups {
