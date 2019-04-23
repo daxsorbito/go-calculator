@@ -1,6 +1,6 @@
 # CalcuCo Calculator API
 
-A calculator API
+A calculator API written in `go` lang using `go-swagger`
 
 ## Required
 
@@ -8,18 +8,23 @@ A calculator API
 1. docker
 1. docker-compose
 
+## Clone
+
+```go get github.com/daxsorbito/go-calculator```
+
 ## Running on local
 
 1. ```docker-compose up mongo```
-1. ```GO111MODULE=on go run ./cmd/calculator-server. --port 8080```
-1. Open a brower and navigate to `http://localhost:8080/v1/swagger`
+2. ```GO111MODULE=on go mod download```
+3. ```GO111MODULE=on go run ./cmd/calculator-server. --port 8080```
+4. Open a brower and navigate to `http://localhost:8080/v1/swagger`
 
 ## Running docker-compose
 
-1. ```docker-compose up```
-1. Open a brower and navigate to `http://localhost:8080/v1/swagger`
+1. `docker-compose up --build`, the `--build` is set to do a force build
+2. Open a brower and navigate to `http://localhost:8080/v1/swagger` - container port is forwarded to localhost's same port `8080`
 
-### Testing `/calc` endpoint on swagger UI
+## Testing `/calc` endpoint on swagger UI
 
 1. Navigate to `http://localhost:8080/v1/swagger`
 1. Click on the `Authorize` button
@@ -32,7 +37,7 @@ A calculator API
 1. Enter values to compute in the `args` fields
 1. Click `Execute` button to see the result
 
-### Testing `/report` endpoint on swagger UI
+## Testing `/report` endpoint on swagger UI
 
 1. Navigate to `http://localhost:8080/v1/swagger`
 1. Click on the `Authorize` button
@@ -45,18 +50,7 @@ A calculator API
 1. Enter a `end` e.g. `2020-04-23T00:00:00.000Z`
 1. Click `Execute` button to see the result
 
-### Running locally
-
-1. `docker-compose up mongo`
-1. `GO111MODULE=on go run ./cmd/calculator-server. --port 8080`
-1. Navigate to `http://localhost:8080/v1/swagger`
-
-### Running using docker-compose
-
-1. `docker-compose up --build`, the `--build` is set just to force build
-1. Navigate to `http://localhost:8080/v1/swagger` - container port is forwarded to localhost's same port `8080`
-
-### Running test
+## Running test
 
 1. `GO111MODULE=on go test ./...`
 
@@ -69,5 +63,5 @@ A calculator API
 - [x] End point for `/report`
 - [x] Service and unit test for `calc` services
 - [x] Service and unit test for `report` services
-- [x] Dockerfile to build the app
+- [x] Multi stage Dockerfile to build the app
 - [x] Docker-compose to spin up the app and `mongodb`
