@@ -19,7 +19,7 @@ A calculator API
 1. ```docker-compose up```
 1. Open a brower and navigate to `http://localhost:8080/v1/swagger`
 
-### Testing `/calc` endpoint on swagger
+### Testing `/calc` endpoint on swagger UI
 
 1. Navigate to `http://localhost:8080/v1/swagger`
 1. Click on the `Authorize` button
@@ -32,7 +32,7 @@ A calculator API
 1. Enter values to compute in the `args` fields
 1. Click `Execute` button to see the result
 
-### Testing `/report` endpoint swagger
+### Testing `/report` endpoint on swagger UI
 
 1. Navigate to `http://localhost:8080/v1/swagger`
 1. Click on the `Authorize` button
