@@ -13,12 +13,12 @@ import (
 	"github.com/rs/cors"
 	"github.com/syllabix/swagserver"
 
-	"github.com/calcuco/calculator/restapi/operations"
-	"github.com/calcuco/calculator/restapi/operations/calc"
-	"github.com/calcuco/calculator/restapi/operations/report"
+	"github.com/daxsorbito/go-calculator/restapi/operations"
+	"github.com/daxsorbito/go-calculator/restapi/operations/calc"
+	"github.com/daxsorbito/go-calculator/restapi/operations/report"
 
-	srvc "github.com/calcuco/calculator/service/calc"
-	srvcReport "github.com/calcuco/calculator/service/report"
+	srvc "github.com/daxsorbito/go-calculator/service/calc"
+	srvcReport "github.com/daxsorbito/go-calculator/service/report"
 )
 
 //go:generate swagger generate server --target ../../calculator --name Calculator --spec ../swagger.yml

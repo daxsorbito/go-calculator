@@ -30,9 +30,6 @@ type Report struct {
 
 	// type
 	Type string `json:"type,omitempty"`
-
-	// user
-	User string `json:"user,omitempty"`
 }
 
 // Validate validates this report

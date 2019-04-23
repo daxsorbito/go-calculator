@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/calcuco/calculator/restapi"
-	"github.com/calcuco/calculator/restapi/operations"
+	"github.com/daxsorbito/go-calculator/restapi"
+	"github.com/daxsorbito/go-calculator/restapi/operations"
 	loads "github.com/go-openapi/loads"
 	flags "github.com/jessevdk/go-flags"
 )

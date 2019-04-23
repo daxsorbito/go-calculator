@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/calcuco/calculator/models"
+	models "github.com/daxsorbito/go-calculator/models"
 )
 
 // FindReportsOKCode is the HTTP code returned for type FindReportsOK

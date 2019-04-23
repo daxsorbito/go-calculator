@@ -161,9 +161,6 @@ func init() {
         },
         "type": {
           "type": "string"
-        },
-        "user": {
-          "type": "string"
         }
       }
     }
@@ -329,9 +326,6 @@ func init() {
           "type": "string"
         },
         "type": {
-          "type": "string"
-        },
-        "user": {
           "type": "string"
         }
       }

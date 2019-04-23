@@ -19,8 +19,8 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/calcuco/calculator/restapi/operations/calc"
-	"github.com/calcuco/calculator/restapi/operations/report"
+	"github.com/daxsorbito/go-calculator/restapi/operations/calc"
+	"github.com/daxsorbito/go-calculator/restapi/operations/report"
 )
 
 // NewCalculatorAPI creates a new Calculator instance
