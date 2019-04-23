@@ -1,10 +1,5 @@
 package report
 
-// https://medium.com/@petrousov/implementing-crud-operations-with-go-and-mongodb-cf622f2379c4
-// https://github.com/eamonnmcevoy/go_rest_api/blob/master/pkg/mongo/user_service.go
-// https://hackernoon.com/make-yourself-a-go-web-server-with-mongodb-go-on-go-on-go-on-48f394f24e
-
-// https://gist.github.com/y0ssar1an/df2dab474520c4086926f672c52db139
 import (
 	"context"
 	"log"
@@ -31,22 +26,6 @@ type Service interface {
 	AddReport(report model.Report) error
 	GetReport(start, end time.Time) ([]*models.Report, error)
 }
-
-// func connectToDB() {
-// 	err := godotenv.Load()
-// 	if err != nil {
-// 		log.Fatal("Error loading .env file")
-// 	}
-
-// 	mongoURI := os.Getenv("MONGODB_URI")
-
-// 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-// 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
-// 	if err != nil {
-// 		log.Fatalf("Couldn't connect to mongodb - %s", mongoURI)
-// 	}
-// 	err = client.Ping(ctx, readpref.Primary())
-// }
 
 // NewReportService method to create a Report object
 func NewReportService(db *mongo.Database) *Report {
@@ -77,7 +56,7 @@ func (r *Report) GetReport(start, end strfmt.DateTime) ([]*models.Report, error)
 	}
 	var elements []*models.Report
 	var elem *model.Report
-	// Get the next result from the cursor
+
 	for cur.Next(context.Background()) {
 		err := cur.Decode(&elem)
 		if err != nil {

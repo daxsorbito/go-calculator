@@ -69,7 +69,6 @@ func configureAPI(api *operations.CalculatorAPI) http.Handler {
 	})
 
 	api.ReportFindReportsHandler = report.FindReportsHandlerFunc(func(params report.FindReportsParams, principal interface{}) middleware.Responder {
-		// return middleware.NotImplemented("operation report.FindReports has not yet been implemented")
 		reportService := reportSrvc.NewReportService(db)
 		result, _ := reportService.GetReport(*params.Start, *params.End)
 
