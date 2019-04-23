@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./calc-api ./cmd/calculator-server/.
 FROM alpine:latest
 
 COPY --from=builder /go/src/go-calculator/calc-api /opt/go-calc/calc-api
-COPY --from=builder /go/src/go-calculator/.env /opt/go-calc/.env
+COPY --from=builder /go/src/go-calculator/.env.docker /opt/go-calc/.env
 
 WORKDIR /opt/go-calc
 CMD [ "/opt/go-calc/calc-api", "--port", "8080" , "--host", "0.0.0.0"]

@@ -151,11 +151,6 @@ func init() {
           "type": "string",
           "format": "date-time"
         },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "readOnly": true
-        },
         "message": {
           "type": "string"
         },
@@ -316,11 +311,6 @@ func init() {
         "createdDate": {
           "type": "string",
           "format": "date-time"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "readOnly": true
         },
         "message": {
           "type": "string"

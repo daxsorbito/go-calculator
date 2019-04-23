@@ -15,6 +15,7 @@ require (
 	github.com/go-openapi/validate v0.19.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kr/pty v1.1.4 // indirect

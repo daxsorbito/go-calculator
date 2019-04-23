@@ -26,6 +26,15 @@ A calculator API
 1. Enter values to compute in the `args` fields
 1. Click `Execute` button to see the result
 
+### Running locally
+
+1. `docker-compose up mongo`
+1. `GO111MODULE=on go run ./cmd/calculator-server. --port 8080`
+
+### Running using docker-compose
+
+1. `docker-compose up --build`, the `--build` is set just to force build
+
 ### Features
 
 - [x] Swagger implementation - `go-swagger`
@@ -33,8 +42,6 @@ A calculator API
 - [x] End point for `/calc`
 - [x] End point for `/report`
 - [x] Service and unit test for `calc` services
+- [x] Service and unit test for `report` services
 - [x] Dockerfile to build the app
 - [x] Docker-compose to spin up the app and `mongodb`
-- [ ] Service and unit test for `report` services
-- [ ] API test
-- [ ] CI/CD -`travis CI`
